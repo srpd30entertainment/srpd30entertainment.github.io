@@ -3,10 +3,9 @@
   --result-test: calc(var(--pos_y_planet) - var(--scrollYport));
 }
 
-.art-background {
-  background-image: url("svg/art-background.svg");
-  width: 100%;
-  height: 100%;
+.background-world {
+  position: fixed;
+  z-index: -100;
 }
 
 /* ================= BODY ================= */
