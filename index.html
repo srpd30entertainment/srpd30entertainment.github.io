@@ -1,71 +1,10 @@
 
 
 <link rel="stylesheet" href="style.css">
-
-<style>
-
-.objectParallax {
-  position: absolute;
-
-  --objectPara-x: 0px;
-  --objectPara-y: 0px;
-  --parallax-y: 0px;
-  --z-depth: 1;
-
-  --object-width: auto;
-  --object-height: auto;
-
-  left: var(--objectPara-x);
-  top: var(--objectPara-y);
-
-  width: var(--object-width);
-  height: var(--object-height);
-
-  transform: translateX(-50%) translateY(var(--parallax-y));
-
-  will-change: transform;
-  z-index: calc(var(--z-depth));
-}
-
-.objectParallax img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* atau cover */
-}
-
-/* Variasi depth saja */
-.parallaxBack-1  {
-    --z-depth: -3;
-}
-.parallaxBack-2  {
-    --z-depth: -5;
-}
-.parallaxFront-1 {
-    --z-depth: 1; 
-}
-.parallaxFront-2 {
-    --z-depth: 0.9;
-}
-
-.object-test-01{
-  --objectPara-x: 60%;
-  --objectPara-y: 1700px;
-  --object-width: 300px;
-  --object-height: 300px;
-}
-
-.object-test-02 {
-  --objectPara-x: 75%;
-  --objectPara-y: 1900px;
-
-  --object-width: 600px;
-  --object-height: 600px;
-}
-
-</style>
+<link rel="stylesheet" href="parallax-style.css">
 
 <body>
-    <div class="background-world">
+    <div class="background-world backgroundParallax">
         <img src="background/bg.png"/>
     </div>
 
@@ -78,35 +17,80 @@
 
 </body>
 
+<!-- ========================== object parallax ========================== -->
 <script>
+    (() => {
     const objects = document.querySelectorAll('.objectParallax');
+    let lastScrollYobj = window.scrollY;
     let window_h = window.innerHeight;
+    let velocityobj = 0;
 
-    function updateParallax() {
-    const scrollY = window.scrollY;
-    const vpy_window = window_h / 2;
+    function updateObjectParallax() {
+        const scrollY = window.scrollY;
+        const vpy_window = window_h / 2;
+        velocityobj = scrollY - lastScrollYobj;
+        lastScrollY = scrollY;
 
-    objects.forEach(obj => {
+        objects.forEach(obj => {
         const css = getComputedStyle(obj);
-        const objectPara_y = parseFloat(css.getPropertyValue('--objectPara-y'));
-        const depth = parseFloat(css.getPropertyValue('--z-depth'));
+        const objectPara_y = parseFloat(css.getPropertyValue('--objectPara-y')) || 0;
+        const depth = parseFloat(css.getPropertyValue('--z-depth')) || 1;
+        
+        const scrollFactorobj = 1 / depth;   // makin besar depth → makin lambat
+        const velocityFactorobj = 0.5 / depth;
+        
+        const offset = (objectPara_y - ((scrollY) + vpy_window)) * scrollFactorobj + velocityobj * velocityFactorobj;
 
-        // rumus parallax
-        const parallax_offset = (objectPara_y - (scrollY + vpy_window)) / depth;
-
-        obj.style.setProperty('--parallax-y', `${parallax_offset}px`);
-    });
+        obj.style.setProperty('--parallax-y', `${offset}px`);
+        });
     }
 
     function loop() {
-    updateParallax();
-    requestAnimationFrame(loop);
+        updateObjectParallax();
+        requestAnimationFrame(loop);
     }
     loop();
 
     window.addEventListener('resize', () => {
-    window_h = window.innerHeight;
+        window_h = window.innerHeight;
     });
+    })();
 
+</script>
+
+<!-- ========================== background parallax ========================== -->
+<script>
+(() => {
+  const backgrounds = document.querySelectorAll('.backgroundParallax');
+
+  let lastScrollY = window.scrollY;
+  let velocity = 0;
+
+  function updateBackgroundParallax() {
+    const scrollY = window.scrollY;
+    velocity = scrollY - lastScrollY;
+    lastScrollY = scrollY;
+
+    backgrounds.forEach(bgd => {
+      const css = getComputedStyle(bgd);
+
+      const depth = -50;
+
+      const scrollFactor = 1 / depth;   // makin besar depth → makin lambat
+      const velocityFactor = 0.5 / depth;
+
+      const offset = scrollY * scrollFactor + velocity * velocityFactor;
+
+      bgd.style.setProperty('--bgd-parallax-y', `${offset}px`);
+    });
+  }
+
+  function loop() {
+    updateBackgroundParallax();
+    requestAnimationFrame(loop);
+  }
+
+  loop();
+})();
 
 </script>

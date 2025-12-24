@@ -2,26 +2,10 @@
 :root {
   --result-test: calc(var(--pos_y_planet) - var(--scrollYport));
 }
+
 html, body {
   margin: 0;
   padding: 0;
-}
-
-
-.background-world {
-  position: fixed;
-  width: 15vw;
-  height: auto;
-  z-index: -100000000;
-  pointer-events: none;
-}
-
-
-
-.bg-main {
-  width: 100%;
-  height: auto;
-  display: block;
 }
 
 /* ================= BODY ================= */
