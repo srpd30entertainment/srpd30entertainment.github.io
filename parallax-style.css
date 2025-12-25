@@ -57,7 +57,7 @@
 
 /* Variasi depth saja */
 .parallaxBack-1  {
-    --z-depth: -1;
+    --z-depth: -0.6;
 }
 .parallaxBack-2  {
     --z-depth: -5;
@@ -71,7 +71,7 @@
 
 .object-test-01{
   --objectPara-x: 60%;
-  --objectPara-y: 1700px;
+  --objectPara-y: 10px;
 
   --object-width: 10%;
   --object-height: 10%;

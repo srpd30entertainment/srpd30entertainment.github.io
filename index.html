@@ -19,42 +19,52 @@
 
 <!-- ========================== object parallax ========================== -->
 <script>
-    (() => {
-    const objects = document.querySelectorAll('.objectParallax');
-    let lastScrollYobj = window.scrollY;
-    let window_h = window.innerHeight;
-    let velocityobj = 0;
+ (() => {
+  const objects = document.querySelectorAll('.objectParallax');
 
-    function updateObjectParallax() {
-        const scrollY = window.scrollY;
-        const vpy_window = window_h / 2;
-        velocityobj = scrollY - lastScrollYobj;
-        lastScrollY = scrollY;
+  let window_h = window.innerHeight;
+  let velocityobj = 0;
 
-        objects.forEach(obj => {
-        const css = getComputedStyle(obj);
-        const objectPara_y = parseFloat(css.getPropertyValue('--objectPara-y')) || 0;
-        const depth = parseFloat(css.getPropertyValue('--z-depth')) || 1;
-        
-        const scrollFactorobj = 1 / depth;   // makin besar depth → makin lambat
-        const velocityFactorobj = 0.5 / depth;
-        
-        const offset = (objectPara_y - ((scrollY) + vpy_window)) * scrollFactorobj + velocityobj * velocityFactorobj;
+  let parallaxEnabled = true; // ⬅️ toggle debug
 
-        obj.style.setProperty('--parallax-y', `${offset}px`);
-        });
-    }
+  function updateObjectParallax() {
+    const scrollY = window.scrollY;
+    const vpy_window = window_h / 2;
 
-    function loop() {
-        updateObjectParallax();
-        requestAnimationFrame(loop);
-    }
-    loop();
+    velocityobj = scrollY;
 
-    window.addEventListener('resize', () => {
-        window_h = window.innerHeight;
+    objects.forEach(obj => {
+
+      if (!parallaxEnabled) {
+        obj.style.setProperty('--parallax-y', `0px`);
+      }
+      else {
+
+      const css = getComputedStyle(obj);
+      const objectPara_y = parseFloat(css.getPropertyValue('--objectPara-y')) || 0;
+      const depth = parseFloat(css.getPropertyValue('--z-depth')) || 1;
+
+      const scrollFactorobj = 1 / depth;
+      const velocityFactorobj = 0.39 / depth;
+
+      const offset = ((objectPara_y - (scrollY + vpy_window)) * scrollFactorobj + velocityobj * velocityFactorobj);
+    //   const offset = (objectPara_y - (scrollY + vpy_window)) / depth;
+
+      obj.style.setProperty('--parallax-y', `${offset}px`);
+      }
     });
-    })();
+  }
+
+  function loop() {
+    updateObjectParallax();
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  window.addEventListener('resize', () => {
+    window_h = window.innerHeight;
+  });
+})();
 
 </script>
 
