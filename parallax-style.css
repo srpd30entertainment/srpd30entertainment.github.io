@@ -81,6 +81,6 @@
   --objectPara-x: 75%;
   --objectPara-y: 1900px;
 
-  --object-width: 200%;
-  --object-height: 200%;
+  --object-width: 100%;
+  --object-height: 100%;
 }
